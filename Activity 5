@@ -1,0 +1,22 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Mar  9 22:14:44 2024
+
+@author: Maborang, Chess Marie T.
+"""
+
+import scipy.stats as sts
+import numpy as np
+import matplotlib.pyplot as plt
+
+mu = np.linspace(1.65, 1.8, num = 50)
+test = np.linspace(0, 2)
+uniform_dist = sts.uniform.pdf(mu) * 1 #sneaky advanced note: I'm using the uniform distribution for clarity,
+                                       #but we can also make the beta distribution look completely flat by tweaking alpha and beta!
+beta_dist = sts.beta.pdf(mu, 2, 5, loc = 1.65, scale = 0.2)
+beta_dist = beta_dist/beta_dist.sum() #Normalizing the distribution to make the probability densities sum into 1
+plt.plot(mu, beta_dist, label = 'Beta Dist')
+plt.plot(mu, uniform_dist, label = 'Uniform Dist')
+plt.xlabel('Value of $\\mu$ in meters')
+plt.ylabel('Probability density')
+plt.legend()
