@@ -1,0 +1,44 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Mar 6
+
+@author: Mabborang, Chess Marie
+"""
+import numpy as np
+import matplotlib.pyplot as plt
+import scipy.stats as stats
+
+# Generate some data
+np.random.seed(42)
+data = np.random.binomial(n=1, p=0.7, size=100)
+
+# Define the prior (uniform distribution)
+prior = stats.uniform(loc=0, scale=1)
+
+# Define the likelihood function (binomial distribution)
+def likelihood(theta):
+    return np.prod(stats.binom.pmf(data, n=1, p=theta))
+
+# Compute the posterior
+theta_values = np.linspace(0, 1, 1000)
+likelihoods = np.array([likelihood(theta) for theta in theta_values])
+unnormalized_posterior = prior.pdf(theta_values) * likelihoods
+posterior = unnormalized_posterior / np.trapz(unnormalized_posterior, theta_values)  # Normalize using trapezoidal rule
+
+# Plot the prior, likelihood, and posterior
+plt.plot(theta_values, prior.pdf(theta_values), label='Prior', linestyle='--')
+plt.plot(theta_values, likelihoods, label='Likelihood')
+plt.plot(theta_values, posterior, label='Posterior')
+plt.xlabel('Theta (Bias of Coin)')
+plt.ylabel('Probability Density')
+plt.legend()
+plt.show()
+
+# Perform inference (compute mean of posterior)
+posterior_mean = np.trapz(theta_values * posterior, theta_values)
+print("Posterior Mean:", posterior_mean)
+
+# Make predictions (predict probability of heads for new coin flips)
+new_data = np.random.binomial(n=1, p=posterior_mean, size=10)
+print("Predicted outcomes for new coin flips: ", new_data)
+
