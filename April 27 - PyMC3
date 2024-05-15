@@ -1,0 +1,64 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed May 2
+@author: Mabborang, Chess Marie T.
+"""
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
+
+sns.set(style="darkgrid", palette="muted")
+
+def simulate_linear_data(start, stop, N, beta_0, beta_1, eps_mean, eps_sigma_sq, random_state):
+    """
+    Simulate linear data with added Gaussian noise.
+
+    Parameters:
+    start (float): Start of the range for x values.
+    stop (float): End of the range for x values.
+    N (int): Number of data points.
+    beta_0 (float): Intercept of the linear model.
+    beta_1 (float): Slope of the linear model.
+    eps_mean (float): Mean of the Gaussian noise.
+    eps_sigma_sq (float): Standard deviation of the Gaussian noise.
+    random_state (int): Seed for the random number generator.
+
+    Returns:
+    pd.DataFrame: DataFrame containing the simulated data.
+    """
+    x_values = np.linspace(start, stop, num=N)
+    noise = np.random.RandomState(random_state).normal(eps_mean, eps_sigma_sq, N)
+    y_values = beta_0 + beta_1 * x_values + noise
+
+    return pd.DataFrame({"x": x_values, "y": y_values})
+
+def plot_simulated_data(df):
+    """
+    Plot the simulated data with a linear regression fit.
+
+    Parameters:
+    df (pd.DataFrame): DataFrame containing the data to plot.
+    """
+    sns.lmplot(x="x", y="y", data=df, height=10)
+    plt.xlim(0.0, 1.0)
+    plt.ylim(df['y'].min() - 1, df['y'].max() + 1)
+    plt.title("Simulated Linear Data")
+    plt.show()
+
+if __name__ == "__main__":
+    # Parameters for the simulation
+    beta_0 = 1.0  
+    beta_1 = 2.0  
+    start = 0
+    stop = 1
+    N = 100
+    eps_mean = 0.0
+    eps_sigma_sq = 0.5
+    random_state = 42
+
+    # Simulate data
+    df = simulate_linear_data(start, stop, N, beta_0, beta_1, eps_mean, eps_sigma_sq, random_state)
+    
+    # Plot the simulated data
+    plot_simulated_data(df)
